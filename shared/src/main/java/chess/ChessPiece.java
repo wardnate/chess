@@ -14,6 +14,23 @@ public class ChessPiece {
     private final ChessPiece.PieceType PieceType;
     private final ChessGame.TeamColor TeamColor;
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ChessPiece that = (ChessPiece) o;
+        return PieceType == that.PieceType && TeamColor == that.TeamColor;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = PieceType.hashCode();
+        result = 31 * result + TeamColor.hashCode();
+        return result;
+    }
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.PieceType = type;
         this.TeamColor = pieceColor;
@@ -53,6 +70,47 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+
+
+        ChessPiece p1 = board.getPiece(myPosition);
+        Collection<ChessMove> moves = new ArrayList<>();
+        if (p1 == null) return moves;
+
+        PieceType type = p1.getPieceType();
+
+        if (type == PieceType.BISHOP) {
+            int[][] directions = {
+                    {1, 1},
+                    {1, -1},
+                    {-1, 1},
+                    {-1, -1}
+            };
+            for (int[] direction : directions) {
+
+                int dr = direction[0];
+                int dc = direction[1];
+                int r = myPosition.getRow() + dr;
+                int c = myPosition.getColumn() + dc;
+
+                while (r >= 1 && r <= 8 && c >= 1 && c <= 8) {
+
+                    ChessPosition newPos = new ChessPosition(r, c);
+                    ChessPiece target = board.getPiece(newPos);
+
+                    if (target == null) {
+                        moves.add(new ChessMove(myPosition, newPos, null));
+                    } else if (target.getTeamColor() != p1.getTeamColor()) {
+                        moves.add(new ChessMove(myPosition, newPos, null));
+                        break;
+                    } else {
+                        break;
+                    }
+                    r += dr;
+                    c += dc;
+
+                }
+            }
+        }
+        return moves;
     }
 }

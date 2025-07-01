@@ -25,6 +25,14 @@ public class ChessPiece {
     }
 
     @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "PieceType=" + PieceType +
+                ", TeamColor=" + TeamColor +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         int result = PieceType.hashCode();
         result = 31 * result + TeamColor.hashCode();

@@ -23,13 +23,13 @@ public class GameServiceTest {
         userService = new UserService(db);
         gameService = new GameService(db);
 
-        // Register user and get auth token for testing
+        // register user, get auth token
         RegisterRequest regReq = new RegisterRequest("user1", "pass1", "user1@example.com");
         RegisterResult regRes = userService.register(regReq);
         authToken = regRes.authToken();
     }
 
-    // Positive: Create game successfully
+    // create game success
     @Test
     public void createGameSuccess() throws Exception {
         CreateGameRequest createReq = new CreateGameRequest("Test Game");
@@ -38,7 +38,7 @@ public class GameServiceTest {
         assertTrue(createRes.gameID() > 0);
     }
 
-    // Negative: Create game bad request (null name)
+    // bad create game request
     @Test
     public void createGameBadRequest() {
         CreateGameRequest badCreate = new CreateGameRequest(null);
@@ -48,7 +48,7 @@ public class GameServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("bad request"));
     }
 
-    // Negative: Create game unauthorized (bad token)
+    // create game unauthorized
     @Test
     public void createGameUnauthorized() {
         CreateGameRequest req = new CreateGameRequest("Game");
@@ -57,7 +57,7 @@ public class GameServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("unauthorized"));
     }
 
-    // Positive: List games returns empty at first
+    // list games return
     @Test
     public void listGamesEmpty() throws Exception {
         ListGamesResult result = gameService.listGames(authToken);
@@ -65,7 +65,7 @@ public class GameServiceTest {
         assertEquals(0, result.games().length);
     }
 
-    // Positive: List games returns created games
+    // list game return
     @Test
     public void listGamesSuccess() throws Exception {
         gameService.createGame(new CreateGameRequest("Game1"), authToken);
@@ -75,7 +75,7 @@ public class GameServiceTest {
         assertEquals(2, listRes.games().length);
     }
 
-    // Positive: Join game successfully as WHITE
+    // join as white
     @Test
     public void joinGameSuccessWhite() throws Exception {
         CreateGameResult createRes = gameService.createGame(new CreateGameRequest("Test Game"), authToken);
@@ -88,7 +88,7 @@ public class GameServiceTest {
         assertNull(game.blackUsername());
     }
 
-    // Positive: Join game successfully as BLACK
+    // join as black
     @Test
     public void joinGameSuccessBlack() throws Exception {
         CreateGameResult createRes = gameService.createGame(new CreateGameRequest("Test Game"), authToken);
@@ -101,7 +101,7 @@ public class GameServiceTest {
         assertNull(game.whiteUsername());
     }
 
-    // Negative: Join game unauthorized (bad token)
+    // join game unauthorized
     @Test
     public void joinGameUnauthorized() {
         JoinGameRequest joinReq = new JoinGameRequest("WHITE", 1);
@@ -110,7 +110,7 @@ public class GameServiceTest {
         assertTrue(e.getMessage().contains("unauthorized"));
     }
 
-    // Negative: Join game bad request (null gameID)
+    // null game ID
     @Test
     public void joinGameBadRequestNullGameID() {
         JoinGameRequest joinReq = new JoinGameRequest("WHITE", null);
@@ -119,7 +119,7 @@ public class GameServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("bad request"));
     }
 
-    // Negative: Join game bad request (invalid color)
+    // invalid color
     @Test
     public void joinGameBadRequestInvalidColor() throws Exception {
         CreateGameResult createRes = gameService.createGame(new CreateGameRequest("Test Game"), authToken);
@@ -130,7 +130,7 @@ public class GameServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("bad request"));
     }
 
-    // Negative: Join game color already taken
+    // game color already taken
     @Test
     public void joinGameColorAlreadyTaken() throws Exception {
         CreateGameResult createRes = gameService.createGame(new CreateGameRequest("Test Game"), authToken);

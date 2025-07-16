@@ -17,7 +17,7 @@ public class UserServiceTest {
         userService = new UserService(db);
     }
 
-    // Positive: Register a new user successfully
+    // register new user
     @Test
     public void registerSuccess() throws Exception {
         RegisterRequest request = new RegisterRequest("user1", "pass1", "user1@example.com");
@@ -26,7 +26,7 @@ public class UserServiceTest {
         assertNotNull(result.authToken());
     }
 
-    // Negative: Register user with missing fields (bad request)
+    // missing fields
     @Test
     public void registerBadRequest() {
         RegisterRequest request = new RegisterRequest(null, "pass", "email@example.com");
@@ -34,7 +34,7 @@ public class UserServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("bad request"));
     }
 
-    // Negative: Register an existing user
+    // existing user
     @Test
     public void registerUserAlreadyExists() throws Exception {
         RegisterRequest request = new RegisterRequest("user1", "pass1", "user1@example.com");
@@ -44,7 +44,7 @@ public class UserServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("already taken"));
     }
 
-    // Positive: Login with correct credentials
+    // login!
     @Test
     public void loginSuccess() throws Exception {
         RegisterRequest registerReq = new RegisterRequest("user1", "pass1", "user1@example.com");
@@ -56,7 +56,7 @@ public class UserServiceTest {
         assertNotNull(loginResult.authToken());
     }
 
-    // Negative: Login with bad credentials (unauthorized)
+    // login bad credentials
     @Test
     public void loginUnauthorized() throws Exception {
         RegisterRequest registerReq = new RegisterRequest("user1", "pass1", "user1@example.com");
@@ -67,7 +67,7 @@ public class UserServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("unauthorized"));
     }
 
-    // Negative: Login bad request (missing username)
+    // missing username
     @Test
     public void loginBadRequest() {
         LoginRequest badRequest = new LoginRequest(null, "pass1");
@@ -75,7 +75,7 @@ public class UserServiceTest {
         assertTrue(e.getMessage().toLowerCase().contains("bad request"));
     }
 
-    // Positive: Logout success
+    // logout
     @Test
     public void logoutSuccess() throws Exception {
         RegisterRequest reg = new RegisterRequest("user1", "pass1", "user1@example.com");
@@ -85,7 +85,7 @@ public class UserServiceTest {
         assertDoesNotThrow(() -> userService.logout(regResult.authToken()));
     }
 
-    // Negative: Logout unauthorized
+    // logout fail
     @Test
     public void logoutUnauthorized() {
         DataAccessException e = assertThrows(DataAccessException.class, () -> userService.logout("badtoken"));

@@ -18,15 +18,15 @@ public class ClearServiceTest {
 
     @Test
     public void clearSuccessRemovesAll() throws Exception {
-        // Add some data
+        // add data
         db.insertUser(new UserData("user1", "pass", "email"));
         db.insertAuth(new AuthData("token1", "user1"));
         db.insertGame(new GameData(1, null, null, "Game1", new chess.ChessGame()));
 
-        // Clear
+        // clear
         clearService.clear();
 
-        // Verify cleared
+        // verify clear
         assertNull(db.getUser("user1"));
         assertNull(db.getAuth("token1"));
         assertTrue(db.listGames().isEmpty());

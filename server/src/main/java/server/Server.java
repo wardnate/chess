@@ -32,7 +32,7 @@ public class Server {
         gameService = new GameService(dataAccess);
         clearService = new ClearService(dataAccess);
 
-        // 1. Clear application - DELETE /db
+        // clear
         delete("/db", (req, res) -> {
             try {
                 clearService.clear();
@@ -44,7 +44,7 @@ public class Server {
             }
         });
 
-        // 2. Register - POST /user
+        // register
         post("/user", (req, res) -> {
             try {
                 var registerRequest = gson.fromJson(req.body(), RegisterRequest.class);
@@ -63,7 +63,7 @@ public class Server {
             }
         });
 
-        // 3. Login - POST /session
+        // login
         post("/session", (req, res) -> {
             try {
                 var loginRequest = gson.fromJson(req.body(), LoginRequest.class);
@@ -82,7 +82,7 @@ public class Server {
             }
         });
 
-        // 4. Logout - DELETE /session
+        // logout
         delete("/session", (req, res) -> {
             try {
                 String authToken = req.headers("authorization");
@@ -100,7 +100,7 @@ public class Server {
             }
         });
 
-        // 5. List Games - GET /game
+        // list games
         get("/game", (req, res) -> {
             try {
                 String authToken = req.headers("authorization");
@@ -118,7 +118,7 @@ public class Server {
             }
         });
 
-        // 6. Create Game - POST /game
+        // create game
         post("/game", (req, res) -> {
             try {
                 String authToken = req.headers("authorization");
@@ -139,7 +139,7 @@ public class Server {
             }
         });
 
-        // 7. Join Game - PUT /game
+        // join
         put("/game", (req, res) -> {
             try {
                 String authToken = req.headers("authorization");

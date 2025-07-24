@@ -74,4 +74,50 @@ public class DatabaseManager {
         var port = Integer.parseInt(props.getProperty("db.port"));
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
+    /**
+     * Creates all required tables if they do not already exist.
+     */
+    public static void initializeTables() throws DataAccessException {
+        createDatabase(); // Ensures database exists first
+
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
+            // USERS TABLE
+            stmt.executeUpdate("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(255) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                email VARCHAR(255)
+            );
+        """);
+
+            // AUTH TABLE
+            stmt.executeUpdate("""
+            CREATE TABLE IF NOT EXISTS auth (
+                token VARCHAR(36) PRIMARY KEY,
+                username VARCHAR(255),
+                FOREIGN KEY (username) REFERENCES users(username)
+            );
+        """);
+
+            // GAMES TABLE
+            stmt.executeUpdate("""
+            CREATE TABLE IF NOT EXISTS games (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                game_name VARCHAR(255),
+                white_username VARCHAR(255),
+                black_username VARCHAR(255),
+                game_state TEXT,
+                FOREIGN KEY (white_username) REFERENCES users(username),
+                FOREIGN KEY (black_username) REFERENCES users(username)
+            );
+        """);
+
+            System.out.println("✅ Tables created (or already exist)");
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to initialize database tables", e);
+        }
+    }
+
 }

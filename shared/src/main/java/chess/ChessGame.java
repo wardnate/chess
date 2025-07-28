@@ -14,18 +14,6 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
-    private String whitePlayer;
-    private String blackPlayer;
-
-    @Override
-    public String toString() {
-        return "ChessGame{" +
-                "teamTurn=" + teamTurn +
-                ", board=" + board +
-                ", whitePlayer='" + whitePlayer + '\'' +
-                ", blackPlayer='" + blackPlayer + '\'' +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -33,34 +21,26 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return teamTurn == chessGame.teamTurn && Objects.equals(board, chessGame.board) && Objects.equals(whitePlayer, chessGame.whitePlayer) && Objects.equals(blackPlayer, chessGame.blackPlayer);
+        return teamTurn == chessGame.teamTurn && Objects.equals(board, chessGame.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamTurn, board, whitePlayer, blackPlayer);
+        return Objects.hash(teamTurn, board);
     }
 
-    public void setWhitePlayer(String username) {
-        this.whitePlayer = username;
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "teamTurn=" + teamTurn +
+                ", board=" + board +
+                '}';
     }
 
-    public void setBlackPlayer(String username) {
-        this.blackPlayer = username;
-    }
-
-    public String getWhitePlayer() {
-        return this.whitePlayer;
-    }
-    public String getBlackPlayer() {
-        return this.blackPlayer;
-    }
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
         this.board.resetBoard();
-        this.whitePlayer = null;
-        this.blackPlayer = null;
     }
     /**
      * @return Which team's turn it is

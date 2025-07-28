@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemDataAccess;
+import dataaccess.MySqlDataAccess;
 import service.*;
 
 import spark.Spark;
@@ -25,9 +26,17 @@ public class Server {
         port(desiredPort);
 
         staticFiles.location("web");
+        try {
+            dataAccess = new MySqlDataAccess();
+        } catch (DataAccessException e) {
+            // Log error and terminate server startup or handle as needed
+            System.err.println("Database initialization failed: " + e.getMessage());
+            e.printStackTrace();
+            // You can stop server startup by returning a special value or throwing a RuntimeException
+            throw new RuntimeException("Failed to initialize data access", e);
+        }
 
         // Initialize data access and services
-        dataAccess = new MemDataAccess();
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
         clearService = new ClearService(dataAccess);

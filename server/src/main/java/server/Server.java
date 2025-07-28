@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemDataAccess;
-import dataaccess.MySqlDataAccess;
 import service.*;
 
 import spark.Spark;
@@ -27,17 +26,11 @@ public class Server {
 
         staticFiles.location("web");
 
-        try {
-            dataAccess = new MySqlDataAccess();
-            userService = new UserService(dataAccess);
-            gameService = new GameService(dataAccess);
-            clearService = new ClearService(dataAccess);
-        }
-        catch (DataAccessException ex) {
-            System.err.println("DB initialization error: " + ex.getMessage());
-            ex.printStackTrace();
-            return -1;
-        }
+        // Initialize data access and services
+        dataAccess = new MemDataAccess();
+        userService = new UserService(dataAccess);
+        gameService = new GameService(dataAccess);
+        clearService = new ClearService(dataAccess);
 
         // clear
         delete("/db", (req, res) -> {

@@ -49,14 +49,18 @@ public class GameService {
             throw new DataAccessException("Error: bad request");
 
         String username = auth.username();
+        ChessGame chessGame = game.game();
+
         if (color.equals("WHITE")) {
             if (game.whiteUsername() != null && !game.whiteUsername().equals(username))
                 throw new DataAccessException("Error: already taken");
-            game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+            chessGame.setWhitePlayer(username);
+            game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), chessGame);
         } else if (color.equals("BLACK")) {
             if (game.blackUsername() != null && !game.blackUsername().equals(username))
                 throw new DataAccessException("Error: already taken");
-            game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+            chessGame.setBlackPlayer(username);
+            game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), chessGame);
         }
         db.updateGame(game);
     }

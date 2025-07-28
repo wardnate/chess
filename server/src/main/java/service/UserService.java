@@ -32,7 +32,7 @@ public class UserService {
         if (request.username() == null || request.password() == null)
             throw new DataAccessException("Error: bad request");
         UserData user = db.getUser(request.username());
-        if (user == null || !user.password().equals(request.password()))
+        if (user == null || !BCrypt.checkpw(request.password(), user.password()))
             throw new DataAccessException("Error: unauthorized");
 
         String authToken = UUID.randomUUID().toString();

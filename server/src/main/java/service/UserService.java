@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import model.*;
 import java.util.UUID;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
     private final DataAccess db;
@@ -12,7 +13,7 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest request) throws DataAccessException {
-        // Validate input
+        // check input
         if (request.username() == null || request.password() == null || request.email() == null)
             throw new DataAccessException("Error: bad request");
         if (db.getUser(request.username()) != null)
@@ -31,7 +32,8 @@ public class UserService {
         if (request.username() == null || request.password() == null)
             throw new DataAccessException("Error: bad request");
         UserData user = db.getUser(request.username());
-        if (user == null || !user.password().equals(request.password()))
+
+        if (user == null || !BCrypt.checkpw(request.password(), user.password()))
             throw new DataAccessException("Error: unauthorized");
 
         String authToken = UUID.randomUUID().toString();

@@ -1,5 +1,5 @@
 package service;
-import org.mindrot.jbcrypt.BCrypt;
+
 import dataaccess.*;
 import model.*;
 import java.util.UUID;
@@ -18,8 +18,7 @@ public class UserService {
         if (db.getUser(request.username()) != null)
             throw new DataAccessException("Error: already taken");
 
-        String hashed = BCrypt.hashpw(request.password(), BCrypt.gensalt());
-        UserData newUser = new UserData(request.username(), hashed, request.email());
+        UserData newUser = new UserData(request.username(), request.password(), request.email());
         db.insertUser(newUser);
 
         String authToken = UUID.randomUUID().toString();

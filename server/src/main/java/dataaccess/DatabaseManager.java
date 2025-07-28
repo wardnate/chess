@@ -2,6 +2,7 @@ package dataaccess;
 
 import java.sql.*;
 import java.util.Properties;
+import java.io.InputStream;
 
 public class DatabaseManager {
     private static String databaseName;
@@ -26,6 +27,45 @@ public class DatabaseManager {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             throw new DataAccessException("failed to create database", ex);
+        }
+    }
+    public static void createTables() throws DataAccessException {
+        try (var conn = getConnection();
+             var stmt = conn.createStatement()) {
+
+            // User Table
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS user (" +
+                            "username VARCHAR(255) PRIMARY KEY," +
+                            "password VARCHAR(255) NOT NULL," +
+                            "email VARCHAR(255) NOT NULL" +
+                            ");"
+            );
+
+            // Auth Table
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS auth (" +
+                            "authToken VARCHAR(255) PRIMARY KEY," +
+                            "username VARCHAR(255) NOT NULL," +
+                            "FOREIGN KEY (username) REFERENCES user(username) ON DELETE CASCADE" +
+                            ");"
+            );
+
+            // Game Table
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS game (" +
+                            "gameID INT AUTO_INCREMENT PRIMARY KEY," +
+                            "whiteUsername VARCHAR(255)," +
+                            "blackUsername VARCHAR(255)," +
+                            "gameName VARCHAR(255) NOT NULL," +
+                            "gameJson TEXT," +
+                            "FOREIGN KEY (whiteUsername) REFERENCES user(username) ON DELETE SET NULL," +
+                            "FOREIGN KEY (blackUsername) REFERENCES user(username) ON DELETE SET NULL" +
+                            ");"
+            );
+
+        } catch (SQLException ex) {
+            throw new DataAccessException("failed to create tables", ex);
         }
     }
 
